@@ -72,4 +72,21 @@ describe('SignUp Controller', () => {
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new MissingParamError('passwordConfirmation'))
   })
+
+  it('Should return 200 all fields are provided', () => {
+    const sut = new SignUpController()
+    const httpRequest = {
+      body: {
+        name: mockValues.TEST_NAME,
+        email: mockValues.TEST_EMAIL,
+        password: mockValues.TEST_PASSWORD,
+        passwordConfirmation: mockValues.TEST_PASSWORD
+      }
+    }
+
+    const httpResponse = sut.handle(httpRequest)
+
+    expect(httpResponse.statusCode).toBe(200)
+    expect(httpResponse.body).not.toEqual(new MissingParamError('passwordConfirmation'))
+  })
 })

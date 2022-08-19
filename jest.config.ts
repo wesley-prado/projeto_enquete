@@ -7,7 +7,10 @@ export default {
   testEnvironment: 'jest-environment-node',
   transform: {
     '.+\\.ts$': 'ts-jest'
-  }
+  },
+  coveragePathIgnorePatterns: [
+    '.+-interface.ts$'
+  ]
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},

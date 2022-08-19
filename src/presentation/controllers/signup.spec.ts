@@ -1,14 +1,20 @@
 import { SignUpController } from './signup'
 
 describe('SignUp Controller', () => {
+  const mockValues = {
+    TEST_PASSWORD: 'any_password',
+    TEST_EMAIL: 'wesley@test.com',
+    TEST_NAME: 'Wesley Prado'
+  }
+
   it('Should return 400 if no name is provided', () => {
     // system under test
     const sut = new SignUpController()
     const httpRequest = {
       body: {
-        email: 'wesleyprado.dev@test.com',
-        password: '123456',
-        passwordConfirmation: '123456'
+        email: mockValues.TEST_EMAIL,
+        password: mockValues.TEST_PASSWORD,
+        passwordConfirmation: mockValues.TEST_PASSWORD
       }
     }
 
@@ -16,5 +22,22 @@ describe('SignUp Controller', () => {
 
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new Error('Missing param: name'))
+  })
+
+  it('Should return 400 if no email is provided', () => {
+    // system under test
+    const sut = new SignUpController()
+    const httpRequest = {
+      body: {
+        name: mockValues.TEST_NAME,
+        password: mockValues.TEST_PASSWORD,
+        passwordConfirmation: mockValues.TEST_PASSWORD
+      }
+    }
+
+    const httpResponse = sut.handle(httpRequest)
+
+    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body).toEqual(new Error('Missing param: email'))
   })
 })

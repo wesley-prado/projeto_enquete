@@ -1,18 +1,16 @@
 import { SignUpController } from './signup'
 import { MissingParamError, InvalidParamError, ServerError } from '../errors'
 import { EmailValidator } from '../interfaces'
+import { AddAccount, AddAccountModel } from '../../domain/usecases/add-account-interface'
+import { AccountModel } from '../../domain/models/account-model'
 
-const mockValues = {
+const mock = {
   TEST_VALID_PASSWORD: 'valid_password',
   TEST_INVALID_PASSWORD: 'invalid_password',
   TEST_VALID_EMAIL: 'valid_email@mail.com',
   TEST_INVALID_EMAIL: 'invalid_email@mail.com',
-  TEST_NAME: 'Any Name'
-}
-
-interface SutType {
-  sut: SignUpController
-  emailValidatorStub: EmailValidator
+  TEST_NAME: 'Any Name',
+  ID: 'any_id'
 }
 
 const makeEmailValidator = (): EmailValidator => {
@@ -23,14 +21,38 @@ const makeEmailValidator = (): EmailValidator => {
   }
   return new EmailValidatorStub()
 }
+const makeAddAccount = (): AddAccount => {
+  class AddAccountStub implements AddAccount {
+    add (account: AddAccountModel): AccountModel {
+      const fakeAccount = {
+        id: mock.ID,
+        name: mock.TEST_NAME,
+        email: mock.TEST_VALID_EMAIL,
+        password: mock.TEST_VALID_PASSWORD
+      }
+
+      return fakeAccount
+    }
+  }
+
+  return new AddAccountStub()
+}
+
+interface SutType {
+  sut: SignUpController
+  emailValidatorStub: EmailValidator
+  addAccountStub: AddAccount
+}
 
 const makeSut = (): SutType => {
   const emailValidatorStub = makeEmailValidator()
-  const sut = new SignUpController(emailValidatorStub)
+  const addAccountStub = makeAddAccount()
+  const sut = new SignUpController(emailValidatorStub, addAccountStub)
 
   return {
     sut,
-    emailValidatorStub
+    emailValidatorStub,
+    addAccountStub
   }
 }
 
@@ -40,9 +62,9 @@ describe('SignUp Controller', () => {
     const { sut } = makeSut()
     const httpRequest = {
       body: {
-        email: mockValues.TEST_VALID_EMAIL,
-        password: mockValues.TEST_VALID_PASSWORD,
-        passwordConfirmation: mockValues.TEST_VALID_PASSWORD
+        email: mock.TEST_VALID_EMAIL,
+        password: mock.TEST_VALID_PASSWORD,
+        passwordConfirmation: mock.TEST_VALID_PASSWORD
       }
     }
 
@@ -56,9 +78,9 @@ describe('SignUp Controller', () => {
     const { sut } = makeSut()
     const httpRequest = {
       body: {
-        name: mockValues.TEST_NAME,
-        password: mockValues.TEST_VALID_PASSWORD,
-        passwordConfirmation: mockValues.TEST_VALID_PASSWORD
+        name: mock.TEST_NAME,
+        password: mock.TEST_VALID_PASSWORD,
+        passwordConfirmation: mock.TEST_VALID_PASSWORD
       }
     }
 
@@ -72,9 +94,9 @@ describe('SignUp Controller', () => {
     const { sut } = makeSut()
     const httpRequest = {
       body: {
-        name: mockValues.TEST_NAME,
-        passwordConfirmation: mockValues.TEST_VALID_PASSWORD,
-        email: mockValues.TEST_VALID_EMAIL
+        name: mock.TEST_NAME,
+        passwordConfirmation: mock.TEST_VALID_PASSWORD,
+        email: mock.TEST_VALID_EMAIL
       }
     }
 
@@ -88,9 +110,9 @@ describe('SignUp Controller', () => {
     const { sut } = makeSut()
     const httpRequest = {
       body: {
-        name: mockValues.TEST_NAME,
-        password: mockValues.TEST_VALID_PASSWORD,
-        email: mockValues.TEST_VALID_EMAIL
+        name: mock.TEST_NAME,
+        password: mock.TEST_VALID_PASSWORD,
+        email: mock.TEST_VALID_EMAIL
       }
     }
 
@@ -104,10 +126,10 @@ describe('SignUp Controller', () => {
     const { sut, emailValidatorStub } = makeSut()
     const httpRequest = {
       body: {
-        name: mockValues.TEST_NAME,
-        password: mockValues.TEST_VALID_PASSWORD,
-        passwordConfirmation: mockValues.TEST_VALID_PASSWORD,
-        email: mockValues.TEST_INVALID_EMAIL
+        name: mock.TEST_NAME,
+        password: mock.TEST_VALID_PASSWORD,
+        passwordConfirmation: mock.TEST_VALID_PASSWORD,
+        email: mock.TEST_INVALID_EMAIL
       }
     }
 
@@ -122,10 +144,10 @@ describe('SignUp Controller', () => {
     const { sut } = makeSut()
     const httpRequest = {
       body: {
-        name: mockValues.TEST_NAME,
-        password: mockValues.TEST_VALID_PASSWORD,
-        passwordConfirmation: mockValues.TEST_INVALID_PASSWORD,
-        email: mockValues.TEST_VALID_EMAIL
+        name: mock.TEST_NAME,
+        password: mock.TEST_VALID_PASSWORD,
+        passwordConfirmation: mock.TEST_INVALID_PASSWORD,
+        email: mock.TEST_VALID_EMAIL
       }
     }
 
@@ -138,17 +160,17 @@ describe('SignUp Controller', () => {
     const { sut, emailValidatorStub } = makeSut()
     const httpRequest = {
       body: {
-        name: mockValues.TEST_NAME,
-        password: mockValues.TEST_VALID_PASSWORD,
-        passwordConfirmation: mockValues.TEST_VALID_PASSWORD,
-        email: mockValues.TEST_VALID_EMAIL
+        name: mock.TEST_NAME,
+        password: mock.TEST_VALID_PASSWORD,
+        passwordConfirmation: mock.TEST_VALID_PASSWORD,
+        email: mock.TEST_VALID_EMAIL
       }
     }
 
     const isValidSpy = jest.spyOn(emailValidatorStub, 'isValid')
 
     sut.handle(httpRequest)
-    expect(isValidSpy).toHaveBeenCalledWith(mockValues.TEST_VALID_EMAIL)
+    expect(isValidSpy).toHaveBeenCalledWith(mock.TEST_VALID_EMAIL)
   })
 
   it('Should return 500 if EmailValidator throws', () => {
@@ -159,10 +181,10 @@ describe('SignUp Controller', () => {
 
     const httpRequest = {
       body: {
-        name: mockValues.TEST_NAME,
-        password: mockValues.TEST_VALID_PASSWORD,
-        passwordConfirmation: mockValues.TEST_VALID_PASSWORD,
-        email: mockValues.TEST_INVALID_EMAIL
+        name: mock.TEST_NAME,
+        password: mock.TEST_VALID_PASSWORD,
+        passwordConfirmation: mock.TEST_VALID_PASSWORD,
+        email: mock.TEST_INVALID_EMAIL
       }
     }
 
@@ -175,10 +197,10 @@ describe('SignUp Controller', () => {
     const { sut } = makeSut()
     const httpRequest = {
       body: {
-        name: mockValues.TEST_NAME,
-        email: mockValues.TEST_VALID_EMAIL,
-        password: mockValues.TEST_VALID_PASSWORD,
-        passwordConfirmation: mockValues.TEST_VALID_PASSWORD
+        name: mock.TEST_NAME,
+        email: mock.TEST_VALID_EMAIL,
+        password: mock.TEST_VALID_PASSWORD,
+        passwordConfirmation: mock.TEST_VALID_PASSWORD
       }
     }
 
@@ -186,5 +208,28 @@ describe('SignUp Controller', () => {
 
     expect(httpResponse.statusCode).toBe(200)
     expect(httpResponse.body).not.toEqual(new MissingParamError('passwordConfirmation'))
+  })
+
+  it('Should call AddAccount with correct values', () => {
+    const { sut, addAccountStub } = makeSut()
+
+    const addSpy = jest.spyOn(addAccountStub, 'add')
+
+    const httpRequest = {
+      body: {
+        name: mock.TEST_NAME,
+        password: mock.TEST_VALID_PASSWORD,
+        passwordConfirmation: mock.TEST_VALID_PASSWORD,
+        email: mock.TEST_VALID_EMAIL
+      }
+    }
+
+    sut.handle(httpRequest)
+
+    expect(addSpy).toHaveBeenCalledWith({
+      name: mock.TEST_NAME,
+      password: mock.TEST_VALID_PASSWORD,
+      email: mock.TEST_VALID_EMAIL
+    })
   })
 })

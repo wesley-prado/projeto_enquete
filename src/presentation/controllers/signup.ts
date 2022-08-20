@@ -1,7 +1,6 @@
 import { Controller } from '../interfaces/controller-interface'
 import { HttpRequest, HttpResponse } from '../interfaces/http-interface'
-import { MissingParamError } from '../errors/missing-param-error'
-import { InvalidParamError } from '../errors/invalid-param-error'
+import { MissingParamError, InvalidParamError } from '../errors'
 import { badRequest, serverError } from '../helpers/http-helper'
 import { EmailValidator } from '../interfaces/email-validator-interface'
 

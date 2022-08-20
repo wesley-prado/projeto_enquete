@@ -2,8 +2,7 @@ import { Controller } from '../interfaces/controller-interface'
 import { HttpRequest, HttpResponse } from '../interfaces/http-interface'
 import { MissingParamError } from '../errors/missing-param-error'
 import { InvalidParamError } from '../errors/invalid-param-error'
-import { ServerError } from '../errors/server-error'
-import { badRequest } from '../helpers/http-helper'
+import { badRequest, serverError } from '../helpers/http-helper'
 import { EmailValidator } from '../interfaces/email-validator-interface'
 
 const REQUIRED_FIELDS = ['name', 'email', 'password', 'passwordConfirmation']
@@ -28,10 +27,7 @@ export class SignUpController implements Controller {
         body: 'OK'
       }
     } catch (error) {
-      return {
-        statusCode: 500,
-        body: new ServerError()
-      }
+      return serverError()
     }
   }
 }

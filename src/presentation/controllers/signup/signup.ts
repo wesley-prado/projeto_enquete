@@ -13,7 +13,7 @@ export class SignUpController implements Controller {
     this.addAccount = addAccount
   }
 
-  handle (httpRequest: HttpRequest): HttpResponse {
+  async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       for (const field of REQUIRED_FIELDS) {
         if (!httpRequest.body[field]) return badRequest(new MissingParamError(field))
@@ -30,9 +30,9 @@ export class SignUpController implements Controller {
         password
       }
 
-      this.addAccount.add(account)
+      const response = await this.addAccount.add(account)
 
-      return success(account)
+      return success(response)
     } catch (error) {
       return serverError()
     }

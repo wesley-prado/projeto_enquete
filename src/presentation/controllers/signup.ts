@@ -1,8 +1,6 @@
-import { Controller } from '../interfaces/controller-interface'
-import { HttpRequest, HttpResponse } from '../interfaces/http-interface'
+import { Controller, EmailValidator, HttpRequest, HttpResponse } from '../interfaces'
 import { MissingParamError, InvalidParamError } from '../errors'
 import { badRequest, serverError } from '../helpers/http-helper'
-import { EmailValidator } from '../interfaces/email-validator-interface'
 
 const REQUIRED_FIELDS = ['name', 'email', 'password', 'passwordConfirmation']
 

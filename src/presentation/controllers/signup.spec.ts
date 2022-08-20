@@ -1,6 +1,6 @@
 import { SignUpController } from './signup'
 import { MissingParamError, InvalidParamError, ServerError } from '../errors'
-import { EmailValidator } from '../interfaces/email-validator-interface'
+import { EmailValidator } from '../interfaces'
 
 const mockValues = {
   TEST_PASSWORD: 'any_password',

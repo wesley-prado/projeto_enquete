@@ -1,16 +1,18 @@
 import { SignUpController } from './signup'
 import { MissingParamError } from '../errors/missing-param-error'
 
-describe('SignUp Controller', () => {
-  const mockValues = {
-    TEST_PASSWORD: 'any_password',
-    TEST_EMAIL: 'wesley@test.com',
-    TEST_NAME: 'Wesley Prado'
-  }
+const mockValues = {
+  TEST_PASSWORD: 'any_password',
+  TEST_EMAIL: 'any_email@mail.com',
+  TEST_NAME: 'Any Name'
+}
 
+const makeSut = (): SignUpController => new SignUpController()
+
+describe('SignUp Controller', () => {
   it('Should return 400 if no name is provided', () => {
     // system under test
-    const sut = new SignUpController()
+    const sut = makeSut()
     const httpRequest = {
       body: {
         email: mockValues.TEST_EMAIL,
@@ -26,7 +28,7 @@ describe('SignUp Controller', () => {
   })
 
   it('Should return 400 if no email is provided', () => {
-    const sut = new SignUpController()
+    const sut = makeSut()
     const httpRequest = {
       body: {
         name: mockValues.TEST_NAME,
@@ -42,7 +44,7 @@ describe('SignUp Controller', () => {
   })
 
   it('Should return 400 if no password is provided', () => {
-    const sut = new SignUpController()
+    const sut = makeSut()
     const httpRequest = {
       body: {
         name: mockValues.TEST_NAME,
@@ -58,7 +60,7 @@ describe('SignUp Controller', () => {
   })
 
   it('Should return 400 if no passwordConfirmation is provided', () => {
-    const sut = new SignUpController()
+    const sut = makeSut()
     const httpRequest = {
       body: {
         name: mockValues.TEST_NAME,
@@ -74,7 +76,7 @@ describe('SignUp Controller', () => {
   })
 
   it('Should return 200 all fields are provided', () => {
-    const sut = new SignUpController()
+    const sut = makeSut()
     const httpRequest = {
       body: {
         name: mockValues.TEST_NAME,

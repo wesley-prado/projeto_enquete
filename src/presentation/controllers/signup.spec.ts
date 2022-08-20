@@ -3,7 +3,8 @@ import { MissingParamError, InvalidParamError, ServerError } from '../errors'
 import { EmailValidator } from '../interfaces'
 
 const mockValues = {
-  TEST_PASSWORD: 'any_password',
+  TEST_VALID_PASSWORD: 'valid_password',
+  TEST_INVALID_PASSWORD: 'invalid_password',
   TEST_VALID_EMAIL: 'valid_email@mail.com',
   TEST_INVALID_EMAIL: 'invalid_email@mail.com',
   TEST_NAME: 'Any Name'
@@ -40,8 +41,8 @@ describe('SignUp Controller', () => {
     const httpRequest = {
       body: {
         email: mockValues.TEST_VALID_EMAIL,
-        password: mockValues.TEST_PASSWORD,
-        passwordConfirmation: mockValues.TEST_PASSWORD
+        password: mockValues.TEST_VALID_PASSWORD,
+        passwordConfirmation: mockValues.TEST_VALID_PASSWORD
       }
     }
 
@@ -56,8 +57,8 @@ describe('SignUp Controller', () => {
     const httpRequest = {
       body: {
         name: mockValues.TEST_NAME,
-        password: mockValues.TEST_PASSWORD,
-        passwordConfirmation: mockValues.TEST_PASSWORD
+        password: mockValues.TEST_VALID_PASSWORD,
+        passwordConfirmation: mockValues.TEST_VALID_PASSWORD
       }
     }
 
@@ -72,7 +73,7 @@ describe('SignUp Controller', () => {
     const httpRequest = {
       body: {
         name: mockValues.TEST_NAME,
-        passwordConfirmation: mockValues.TEST_PASSWORD,
+        passwordConfirmation: mockValues.TEST_VALID_PASSWORD,
         email: mockValues.TEST_VALID_EMAIL
       }
     }
@@ -88,7 +89,7 @@ describe('SignUp Controller', () => {
     const httpRequest = {
       body: {
         name: mockValues.TEST_NAME,
-        password: mockValues.TEST_PASSWORD,
+        password: mockValues.TEST_VALID_PASSWORD,
         email: mockValues.TEST_VALID_EMAIL
       }
     }
@@ -104,8 +105,8 @@ describe('SignUp Controller', () => {
     const httpRequest = {
       body: {
         name: mockValues.TEST_NAME,
-        password: mockValues.TEST_PASSWORD,
-        passwordConfirmation: mockValues.TEST_PASSWORD,
+        password: mockValues.TEST_VALID_PASSWORD,
+        passwordConfirmation: mockValues.TEST_VALID_PASSWORD,
         email: mockValues.TEST_INVALID_EMAIL
       }
     }
@@ -117,13 +118,29 @@ describe('SignUp Controller', () => {
     expect(httpResponse.body).toEqual(new InvalidParamError('email'))
   })
 
+  it('Should return 400 if an password confirmation fails', () => {
+    const { sut } = makeSut()
+    const httpRequest = {
+      body: {
+        name: mockValues.TEST_NAME,
+        password: mockValues.TEST_VALID_PASSWORD,
+        passwordConfirmation: mockValues.TEST_INVALID_PASSWORD,
+        email: mockValues.TEST_VALID_EMAIL
+      }
+    }
+
+    const httpResponse = sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body).toEqual(new InvalidParamError('passwordConfirmation'))
+  })
+
   it('Should call EmailValidator with correct email', () => {
     const { sut, emailValidatorStub } = makeSut()
     const httpRequest = {
       body: {
         name: mockValues.TEST_NAME,
-        password: mockValues.TEST_PASSWORD,
-        passwordConfirmation: mockValues.TEST_PASSWORD,
+        password: mockValues.TEST_VALID_PASSWORD,
+        passwordConfirmation: mockValues.TEST_VALID_PASSWORD,
         email: mockValues.TEST_VALID_EMAIL
       }
     }
@@ -143,8 +160,8 @@ describe('SignUp Controller', () => {
     const httpRequest = {
       body: {
         name: mockValues.TEST_NAME,
-        password: mockValues.TEST_PASSWORD,
-        passwordConfirmation: mockValues.TEST_PASSWORD,
+        password: mockValues.TEST_VALID_PASSWORD,
+        passwordConfirmation: mockValues.TEST_VALID_PASSWORD,
         email: mockValues.TEST_INVALID_EMAIL
       }
     }
@@ -160,8 +177,8 @@ describe('SignUp Controller', () => {
       body: {
         name: mockValues.TEST_NAME,
         email: mockValues.TEST_VALID_EMAIL,
-        password: mockValues.TEST_PASSWORD,
-        passwordConfirmation: mockValues.TEST_PASSWORD
+        password: mockValues.TEST_VALID_PASSWORD,
+        passwordConfirmation: mockValues.TEST_VALID_PASSWORD
       }
     }
 

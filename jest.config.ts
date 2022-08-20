@@ -9,7 +9,7 @@ export default {
     '.+\\.ts$': 'ts-jest'
   },
   coveragePathIgnorePatterns: [
-    '.+-(interface|model).ts$',
+    '.+-(protocol|protocols|interface|model).ts$',
     'index.ts'
   ]
 

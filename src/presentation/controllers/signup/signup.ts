@@ -1,7 +1,6 @@
-import { Controller, EmailValidator, HttpRequest, HttpResponse } from '../interfaces'
-import { MissingParamError, InvalidParamError } from '../errors'
-import { badRequest, serverError } from '../helpers/http-helper'
-import { AddAccount } from '../../domain/usecases/add-account-interface'
+import { Controller, HttpRequest, HttpResponse, EmailValidator, AddAccount } from '../signup/signup-protocols'
+import { MissingParamError, InvalidParamError } from '../../errors'
+import { badRequest, serverError } from '../../helpers/http-helper'
 
 const REQUIRED_FIELDS = ['name', 'email', 'password', 'passwordConfirmation']
 

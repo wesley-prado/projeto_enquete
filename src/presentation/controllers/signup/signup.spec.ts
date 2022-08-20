@@ -1,8 +1,6 @@
 import { SignUpController } from './signup'
-import { MissingParamError, InvalidParamError, ServerError } from '../errors'
-import { EmailValidator } from '../interfaces'
-import { AddAccount, AddAccountModel } from '../../domain/usecases/add-account-interface'
-import { AccountModel } from '../../domain/models/account-model'
+import { AddAccount, AddAccountModel, AccountModel, EmailValidator } from './signup-protocols'
+import { MissingParamError, InvalidParamError, ServerError } from '../../errors'
 
 const mock = {
   TEST_VALID_PASSWORD: 'valid_password',

@@ -22,16 +22,16 @@ export class SignUpController implements Controller {
       const { email } = httpRequest.body
 
       if (!this.emailValidator.isValid(email)) return badRequest(new InvalidParamError('email'))
+
+      return {
+        statusCode: 200,
+        body: 'OK'
+      }
     } catch (error) {
       return {
         statusCode: 500,
         body: new ServerError()
       }
-    }
-
-    return {
-      statusCode: 200,
-      body: 'OK'
     }
   }
 }

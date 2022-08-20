@@ -9,7 +9,8 @@ export default {
     '.+\\.ts$': 'ts-jest'
   },
   coveragePathIgnorePatterns: [
-    '.+-interface.ts$'
+    '.+-interface.ts$',
+    'index.ts'
   ]
 
   // Options that will be passed to the testEnvironment

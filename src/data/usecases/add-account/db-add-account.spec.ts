@@ -8,10 +8,6 @@ const mock = {
     password: 'ValidPassword@'
   }
 }
-interface SutTypes{
-  sut: DbAddAccount
-  encrypterStub: Encrypter
-}
 
 const makeEncrypter = (): Encrypter => {
   class EncrypterStub implements Encrypter {
@@ -22,6 +18,12 @@ const makeEncrypter = (): Encrypter => {
 
   return new EncrypterStub()
 }
+
+interface SutTypes{
+  sut: DbAddAccount
+  encrypterStub: Encrypter
+}
+
 const makeSut = (): SutTypes => {
   const encrypterStub = makeEncrypter()
   const sut = new DbAddAccount(encrypterStub)
@@ -40,5 +42,14 @@ describe('DbAddAccount Usecase', () => {
     await sut.add(mock.account)
 
     expect(encryptSpy).toHaveBeenCalledWith(mock.account.password)
+  })
+
+  it('Should throw if encrypter throws', async () => {
+    const { sut, encrypterStub } = makeSut()
+    jest.spyOn(encrypterStub, 'encrypt').mockReturnValueOnce(Promise.reject(new Error()))
+
+    const accountPromise = sut.add(mock.account)
+
+    await expect(accountPromise).rejects.toThrow()
   })
 })

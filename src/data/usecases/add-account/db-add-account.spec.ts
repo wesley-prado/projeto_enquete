@@ -1,30 +1,44 @@
+import { Encrypter } from '../../protocols/Encrypter-protocol'
 import { DbAddAccount } from './db-add-account'
 
 const mock = {
-  VALID_NAME: 'Valid Name',
-  VALID_EMAIL: 'any_email@mail.com',
-  VALID_PASSWORD: 'ValidPassword@'
+  account: {
+    name: 'Valid Name',
+    email: 'any_email@mail.com',
+    password: 'ValidPassword@'
+  }
+}
+interface SutTypes{
+  sut: DbAddAccount
+  encrypterStub: Encrypter
+}
+
+const makeEncrypter = (): Encrypter => {
+  class EncrypterStub implements Encrypter {
+    async encrypt (password: string): Promise<string> {
+      return await Promise.resolve('hashed_password')
+    }
+  }
+
+  return new EncrypterStub()
+}
+const makeSut = (): SutTypes => {
+  const encrypterStub = makeEncrypter()
+  const sut = new DbAddAccount(encrypterStub)
+
+  return {
+    sut,
+    encrypterStub
+  }
 }
 
 describe('DbAddAccount Usecase', () => {
   it('Should call Encrypter with correct password', async () => {
-    class EncrypterStub {
-      async encrypt (password: string): Promise<string> {
-        return await Promise.resolve('hashed_password')
-      }
-    }
-
-    const encrypterStub = new EncrypterStub()
-    const sut = new DbAddAccount(encrypterStub)
+    const { sut, encrypterStub } = makeSut()
     const encryptSpy = jest.spyOn(encrypterStub, 'encrypt')
 
-    const accountData = {
-      name: mock.VALID_NAME,
-      email: mock.VALID_EMAIL,
-      password: mock.VALID_PASSWORD
-    }
-    await sut.add(accountData)
+    await sut.add(mock.account)
 
-    expect(encryptSpy).toHaveBeenCalledWith(mock.VALID_PASSWORD)
+    expect(encryptSpy).toHaveBeenCalledWith(mock.account.password)
   })
 })

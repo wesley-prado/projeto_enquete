@@ -1,6 +1,5 @@
 import { Encrypter, AccountModel, AddAccountModel, AddAccountRepository } from './db-add-account-protocols'
 import { DbAddAccount } from './db-add-account'
-import Utils from '../../../main/utils'
 
 const mock = {
   account: {
@@ -92,5 +91,16 @@ describe('DbAddAccount Usecase', () => {
 
     const accountPromise = sut.add(mock.account)
     await expect(accountPromise).rejects.toThrow()
+  })
+
+  it('Should return an Account on success', async () => {
+    const { sut } = makeSut()
+    const account = await sut.add(mock.account)
+
+    expect(account).toEqual({
+      ...mock.account,
+      id: mock.ID,
+      password: mock.HASHED_PASSWORD
+    })
   })
 })

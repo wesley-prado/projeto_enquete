@@ -1,4 +1,4 @@
-import Utils from './index'
+import Utils from './utils'
 
 const mock = {
   numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],

@@ -12,7 +12,7 @@
     "test:ci": "npm test -- --coverage"
   },
   "keywords": [],
-  "author": "",
+  "author": "Wesley Prado <wprado1424@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
@@ -36,5 +36,6 @@
   "dependencies": {
     "bcrypt": "^5.0.1",
     "validator": "^13.7.0"
-  }
+  },
+  "repository": "https://github.com/wesley-prado/projeto_enquete.git"
 }

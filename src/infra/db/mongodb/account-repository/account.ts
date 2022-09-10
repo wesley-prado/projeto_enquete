@@ -15,9 +15,6 @@ export class AccountMongoRepository implements AddAccountRepository {
       id: _id.toString()
     }
 
-    // console.log('result: ', result)
-    console.log('account: ', account)
-    // console.log('insertedAccount: ', insertedAccount)
     return await new Promise(resolve => resolve(account))
   }
 }

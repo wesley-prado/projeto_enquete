@@ -1,4 +1,5 @@
 import { MongoHelper } from '../helpers/mongo-helper'
+import { AccountMongoRepository } from './account'
 
 const mockValues = {
   name: 'any_name',
@@ -6,7 +7,7 @@ const mockValues = {
   password: 'any_password'
 }
 
-const makeSut = () => {
+const makeSut = (): AccountMongoRepository => {
   return new AccountMongoRepository()
 }
 

@@ -1,5 +1,5 @@
 import app from '../config/app'
-import request = require('supertest')
+import * as request from 'supertest'
 
 const routes = {
   CORS: '/test_cors'

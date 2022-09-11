@@ -4,7 +4,7 @@
         "module": "commonjs",
         "moduleResolution": "Node",
         "target": "es2021",
-        "esModuleInterop": true,
+        "esModuleInterop": false,
         "allowJs": true,
         "strictNullChecks": true
     }

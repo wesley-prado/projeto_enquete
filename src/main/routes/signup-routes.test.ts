@@ -1,6 +1,7 @@
 import app from '../config/app'
 import * as request from 'supertest'
 import { MongoHelper } from '../../infra/db/mongodb/helpers/mongo-helper'
+import { Response } from 'express'
 
 const routes = {
   SIGNUP: '/api/signup'
@@ -21,7 +22,7 @@ describe('Signup routes', () => {
   })
 
   it('Should return an account on success', async () => {
-    app.get(routes.SIGNUP, (req, res) => {
+    app.get(routes.SIGNUP, (_, res: Response) => {
       res.status(200).send()
     })
 

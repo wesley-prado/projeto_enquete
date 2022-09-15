@@ -7,7 +7,7 @@ import utils from '../../../../utils/utils'
 
 export class AccountMongoRepository implements AddAccountRepository {
   async add (accountData: AddAccountModel): Promise<AccountModel> {
-    const accountCollection = MongoHelper.getCollection('accounts')
+    const accountCollection = await MongoHelper.getCollection('accounts')
     const dbAccount = utils.deepCopy(accountData)
     await accountCollection.insertOne(dbAccount)
     const account = MongoHelper.map(dbAccount)

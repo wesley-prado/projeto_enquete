@@ -1,10 +1,7 @@
 import { Controller, HttpRequest, HttpResponse } from '../../presentation/protocols'
 import { LogControllerDecorator } from './log'
-
-interface MakeSutType {
-  sut: Controller
-  controllerStub: Controller
-}
+import { serverError } from '../../presentation/helpers/http-helper'
+import { LogErrorRepository } from '../../data/protocols/log-error-repository-protocol'
 
 const makeController = (): Controller => {
   class ControllerStub implements Controller {
@@ -20,13 +17,30 @@ const makeController = (): Controller => {
   return new ControllerStub()
 }
 
+const makeLogErrorRepository = (): LogErrorRepository => {
+  class LogErrorRepositoryStub implements LogErrorRepository {
+    async log (stack: string): Promise<void> {
+      return await Promise.resolve()
+    }
+  }
+  return new LogErrorRepositoryStub()
+}
+
+interface MakeSutType {
+  sut: Controller
+  controllerStub: Controller
+  logErrorRepositoryStub: LogErrorRepository
+}
+
 const makeSut = (): MakeSutType => {
   const controllerStub = makeController()
-  const sut = new LogControllerDecorator(controllerStub)
+  const logErrorRepositoryStub = makeLogErrorRepository()
+  const sut = new LogControllerDecorator(controllerStub, logErrorRepositoryStub)
 
   return {
     sut,
-    controllerStub
+    controllerStub,
+    logErrorRepositoryStub
   }
 }
 
@@ -67,5 +81,28 @@ describe('LogControllerDecorator', () => {
       statusCode: 200,
       body: httpRequest.body
     })
+  })
+
+  it('Should call LogErrorRepository with correct error if controller returns a server error', async () => {
+    const { sut, controllerStub, logErrorRepositoryStub } = makeSut()
+    const fakeError = new Error()
+    const stackMessage = 'any_stack'
+    fakeError.stack = stackMessage
+    const error = serverError(fakeError)
+
+    const logSpy = jest.spyOn(logErrorRepositoryStub, 'log')
+    jest.spyOn(controllerStub, 'handle').mockReturnValueOnce(Promise.resolve(error))
+
+    const httpRequest: HttpRequest = {
+      body: {
+        email: 'any_email@mail.com',
+        name: 'Wesley Prado',
+        password: 'any_password',
+        passwordConfirmation: 'any_password'
+      }
+    }
+    await sut.handle(httpRequest)
+
+    expect(logSpy).toHaveBeenCalledWith(stackMessage)
   })
 })

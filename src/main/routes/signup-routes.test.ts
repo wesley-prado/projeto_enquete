@@ -6,7 +6,7 @@ import { Response } from 'express'
 const routes = {
   SIGNUP: '/api/signup'
 }
-
+// a
 describe('Signup routes', () => {
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL)
@@ -22,7 +22,7 @@ describe('Signup routes', () => {
   })
 
   it('Should return an account on success', async () => {
-    app.get(routes.SIGNUP, (_, res: Response) => {
+    app.post(routes.SIGNUP, (_, res: Response) => {
       res.status(200).send()
     })
 

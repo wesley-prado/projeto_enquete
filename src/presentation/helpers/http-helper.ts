@@ -15,3 +15,5 @@ export const success = (data: any): HttpResponse => ({
   statusCode: 200,
   body: data
 })
+
+export const isSuccessfullStatusCode = (statusCode: number): boolean => statusCode >= 200 && statusCode <= 299
